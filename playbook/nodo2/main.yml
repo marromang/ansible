@@ -1,11 +1,10 @@
 ---
 - hosts: nodo2
   become: yes
+  vars:
+    wp_version: "4.9.2"
+   
   tasks:
-  - name: Include vars
-    include_vars:
-      file: vars
-      
   - name: Install nginx
     apt:
       name: nginx

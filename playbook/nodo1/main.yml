@@ -1,6 +1,12 @@
 ---
 - hosts: nodo1
   become: yes
+
+  vars:
+    zone: "example.com"
+    server: "wordpress"
+    nodo2: "10.0.0.12"
+
   tasks:
   - name: Install bind9
     apt:
@@ -20,7 +26,12 @@
   - name: Config 10.0.0 zone
     template:
       src: 10.0.0.j2
-      dest: /var/cache/bind/db.10.0.0
+      dest: /var/cache/bind/db.10.0.0.conf
+
+  - name: Config example.com zone
+    template:
+      src: example.com.j2
+      dest: /var/cache/bind/example.com.conf
 
   handlers:
     - name: Restart bind9
