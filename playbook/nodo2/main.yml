@@ -22,7 +22,7 @@
       dest: /home/vagrant/wordpress-{{ wp_version }}.tar.gz
 
   - name: Extract archive
-    command: /bin/tar xvf wordpress-{{ wp_version }}.tar.gz 
+    command: /bin/tar xvf /home/vagrant/wordpress-{{ wp_version }}.tar.gz 
     args:  
       chdir: /var/www/html/
       creates: /var/www/html/wordpress
