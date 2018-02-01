@@ -1,0 +1,28 @@
+- hosts: nodo2
+  become: yes
+  tasks:
+  - name: instalar nginx
+    apt:
+      name: nginx
+      update_cache: yes
+          
+  - name: Unzip WordPress
+     unarchive:
+        src: wordpress.zip 
+        dest: /vagrant/
+  
+  - name: Symlink web root to unzipped WordPress
+    file:
+      src: "/vagrant/wordpress"
+      dest: "/var/www/wordpress"
+      state: "link"
+
+  - name: eliminar default
+    file:
+      path: /etc/nginx/sites-availables/default
+      state: absent
+
+  - name: instalar FPM
+    apt:
+      name: php7.0-fpm
+      update_cache: yes
