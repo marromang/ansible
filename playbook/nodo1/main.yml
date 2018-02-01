@@ -12,6 +12,16 @@
      name: mysql-server
      update_cache: yes
 
+  - name: Config named.conf.local
+    template:
+      src: named.j2
+      dest: /var/cache/bind/named.conf.local
+
+  - name: Config 10.0.0 zone
+    template:
+      src: 10.0.0.j2
+      dest: /var/cache/bind/db.10.0.0
+
   handlers:
     - name: Restart bind9
       service: 

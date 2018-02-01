@@ -12,20 +12,28 @@
       name: php7.0-fpm
       update_cache: yes
           
+  - name: Download WordPress
+    get_url: 
+      url: http://wordpress.org/wordpress-{{ wp_version }}.tar.gz 
+      dest: /srv/wordpress-{{ wp_version }}.tar.gz
+
   - name: Unzip WordPress
     unarchive:
-        src: wordpress.zip 
-        dest: /vagrant/
-  
-  - name: Symlink web root to unzipped WordPress
-    file:
-      src: "/vagrant/wordpress"
-      dest: "/var/www/wordpress"
-      state: "link"
+      src: /var/www/html/wordpress-{{ wp_version }}.tar.gz
+      dest:  /var/www/html/wordpress
 
   - name: Delete default site
     file:
       path: /etc/nginx/sites-availables/default
       state: absent
 
-  
+  handlers:
+    - name: Restart nginx
+      service: 
+        name: nginx
+        state: restarted
+
+    - name: Restart fpm
+      service: 
+        name: php7.0-fpm
+        state: restarted
