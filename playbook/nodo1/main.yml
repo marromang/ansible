@@ -1,3 +1,4 @@
+---
 - hosts: nodo1
   become: yes
   tasks:
@@ -10,3 +11,9 @@
     apt:
      name: mysql-server
      update_cache: yes
+
+  handlers:
+    - name: Restart bind9
+      service: 
+        name: bind9
+        state: restarted

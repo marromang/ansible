@@ -1,3 +1,4 @@
+---
 - hosts: nodo2
   become: yes
   tasks:
