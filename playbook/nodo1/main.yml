@@ -1,12 +1,12 @@
 - hosts: nodo1
   become: yes
   tasks:
-  - name: instalar bind9
+  - name: Install bind9
     apt:
       name: bind9
       update_cache: yes
    
-  - name: instalar mysql
+  - name: Install mysql
     apt:
      name: mysql-server
      update_cache: yes
