@@ -2,6 +2,10 @@
 - hosts: nodo2
   become: yes
   tasks:
+  - name: Include vars
+    include_vars:
+      file: vars
+      
   - name: Install nginx
     apt:
       name: nginx
@@ -15,12 +19,14 @@
   - name: Download WordPress
     get_url: 
       url: http://wordpress.org/wordpress-{{ wp_version }}.tar.gz 
-      dest: /srv/wordpress-{{ wp_version }}.tar.gz
+      dest: /home/vagrant/wordpress-{{ wp_version }}.tar.gz
 
-  - name: Unzip WordPress
-    unarchive:
-      src: /var/www/html/wordpress-{{ wp_version }}.tar.gz
-      dest:  /var/www/html/wordpress
+  - name: Extract archive
+    command: /bin/tar xvf wordpress-{{ wp_version }}.tar.gz 
+    args:  
+      chdir: /home/vagrant/
+      creates: /var/www/html/wordpress
+
 
   - name: Delete default site
     file:
