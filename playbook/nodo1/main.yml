@@ -56,7 +56,7 @@
   - name: copy .my.cnf file with root password credentials
     become: true
     become_user: root
-    template: 
+    template: 	
 	   src: .my.cnf 
 	   dest: /root/.my.cnf 
 	   owner: root 
