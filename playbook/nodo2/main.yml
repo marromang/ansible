@@ -10,6 +10,14 @@
     mysql_port: 3306
     server_hostname: example.com
     nodo2: 10.0.0.12
+    nodo1: 10.0.0.11
+    wp_core_url: wordpress.example.com
+    wp_core_title:  Ansible
+    wp_core_admin_user: admin
+    wp_core_admin_pass: admin
+    wp_core_admin_mail: admin@example.com
+    wp_db_host: "{{ nodo1 }}"
+
   tasks:
   - name: Install nginx
     apt:
@@ -23,14 +31,18 @@
       - php7.0
       - php7.0-fpm
       - php7.0-mysql
-          
-  - name: Download WordPress
-    become: yes
-    unarchive:
-      src: http://wordpress.org/latest.tar.gz
-      dest: /var/www/html/
-      remote_src: yes
+      - php7.0-common
+     
+  - name: Install python-mysqldb
+    apt:
+      name: python-mysqldb
+  
 
+  - name: Extract archive
+    unarchive:
+      src: wordpress-4.9.2.tar.gz
+      dest: /var/www/html
+  
   - name: Add group "wordpress"
     group: 
       name: wordpress
@@ -47,52 +59,44 @@
     become: no
     become_method: sudo
 
-  - name: Create WordPress database
-    mysql_db: 
-      name: "{{ wp_db_name }}" 
-      state: present
-
-  - name: Create WordPress database user
-    become: true
-    become_user: root
-    mysql_user:
-      name: "{{ wp_db_user }}"
-      host: "{{ item }}"
-      password: "{{ wp_db_password }}"
-      priv: "*.*:ALL,GRANT"
-    with_items:
-      - "{{ ansible_hostname }}"
-      - "{{ nodo2 }}"
-      - 127.0.0.1
-      - ::1
-      - localhost
 
   - name: Copy WordPress config file
     template: src=wp-config.php dest=/var/www/html/wordpress/wp-config.php
 
-  - name: Change ownership of WordPress installation
-    file: path=/var/www/html/wordpress/ owner=wordpress group=wordpress state=directory recurse=yes setype=httpd_sys_content_t
-
-  - name: Start php-fpm Service
-    service: name=php7.0-fpm state=started enabled=yes
-
+  - name: Change wordpress owner
+    file: path=/var/www/html/wordpress/ owner=www-data group=www-data state=directory recurse=yes
+  
   - name: Delete default site
     file:
-      path: /etc/nginx/sites-availables/default
+      path: /etc/nginx/sites-enabled/default
       state: absent
   
   - name: Copy nginx configuration for wordpress
     template: 
-        src: default
-        dest: /etc/nginx/sites-enabled/default
+        src: default.conf
+        dest: /etc/nginx/sites-available/wordpress
 
-  handlers:
-    - name: Restart nginx
-      service: 
-        name: nginx
-        state: restarted
+  - name: create symlink
+    file:
+      src: /etc/nginx/sites-available/wordpress
+      dest: /etc/nginx/sites-enabled/wordpress
+      state: link
 
-    - name: Restart fpm
-      service: 
-        name: php7.0-fpm
-        state: restarted
+  - name: Restart nginx
+    service: 
+      name: nginx
+      state: restarted
+
+  - name: Get wp-core
+    get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/usr/local/bin/wp mode=a+x
+
+  - name: Configure site
+    become_method: sudo
+    shell: sudo -u vagrant -i -- wp core install --url={{ wp_core_url }} --title={{ wp_core_title }} --admin_user={{ wp_core_admin_user }} --admin_password={{ wp_core_admin_pass }} --admin_email={{ wp_core_admin_mail}} --path=/var/www/html/wordpress
+
+  - name: Restart fpm
+    service: 
+      name: php7.0-fpm
+      state: restarted
+
+ 

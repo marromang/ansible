@@ -9,9 +9,9 @@ Vagrant.configure("2") do |config|
     nodo1.vm.network :public_network,:bridge=>"wlan0"
     nodo1.vm.network :private_network, ip: "10.0.0.11",
     	virtualbox__intnet: "ansible"
-    nodo1.vm.provision "ansible" do |ansible|
-	ansible.playbook = "playbook/nodo1/main.yml"
-    end
+    #nodo1.vm.provision "ansible" do |ansible|
+	#   ansible.playbook = "playbook/nodo1/main.yml"
+    #end
    end
 
  config.vm.define :nodo2 do |nodo2|
@@ -20,9 +20,9 @@ Vagrant.configure("2") do |config|
     nodo2.vm.network :public_network,:bridge=>"wlan0"
     nodo2.vm.network :private_network, ip: "10.0.0.12",
     	virtualbox__intnet: "ansible"
-    nodo2.vm.provision "ansible" do |ansible|
-        ansible.playbook = "playbook/nodo2/main.yml"
-    end
+    #nodo2.vm.provision "ansible" do |ansible|
+    #    ansible.playbook = "playbook/nodo2/main.yml"
+    #end
  end
 
 end
