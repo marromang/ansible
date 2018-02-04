@@ -61,10 +61,18 @@
 
 
   - name: Copy WordPress config file
-    template: src=wp-config.php dest=/var/www/html/wordpress/wp-config.php
+    template: 
+      src: wp-config.php 
+      dest: /var/www/html/wordpress/wp-config.php
+
 
   - name: Change wordpress owner
-    file: path=/var/www/html/wordpress/ owner=www-data group=www-data state=directory recurse=yes
+    file: 
+      path: /var/www/html/wordpress/ 
+      owner: www-data 
+      group: www-data 
+      state: directory 
+      recurse: yes
   
   - name: Delete default site
     file:
@@ -88,7 +96,10 @@
       state: restarted
 
   - name: Get wp-core
-    get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/usr/local/bin/wp mode=a+x
+    get_url: 
+      url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar 
+      dest: /usr/local/bin/wp 
+      mode: a+x
 
   - name: Configure site
     become_method: sudo

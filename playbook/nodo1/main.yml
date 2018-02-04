@@ -56,11 +56,17 @@
   - name: copy .my.cnf file with root password credentials
     become: true
     become_user: root
-    template: src=.my.cnf dest=/root/.my.cnf owner=root mode=0600
+    template: 
+	   src: .my.cnf 
+	   dest: /root/.my.cnf 
+	   owner: root 
+	   mode: 0600
 
   - name: copy 50-server configuration - enable remote connections
     become: true
-    copy: src=50-server.cnf dest=/etc/mysql/mariadb.conf.d/50-server.cnf
+    copy: 
+	   src: 50-server.cnf 
+     dest: /etc/mysql/mariadb.conf.d/50-server.cnf
 
 
   - name: Create WordPress database
