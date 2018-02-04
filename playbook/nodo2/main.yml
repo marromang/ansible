@@ -11,10 +11,10 @@
     server_hostname: example.com
     nodo2: 10.0.0.12
     nodo1: 10.0.0.11
-    wp_core_url: wordpress.example.com
+    wp_core_url: http://wordpress.example.com
     wp_core_title:  Ansible
-    wp_core_admin_user: admin
-    wp_core_admin_pass: admin
+    wp_core_admin_user: wordpress 
+    wp_core_admin_pass: password
     wp_core_admin_mail: admin@example.com
     wp_db_host: "{{ nodo1 }}"
 
